@@ -15,10 +15,11 @@ class CdkStack(cdk.Stack):
         # only one dashboard now:
         # num_dashboards = len(config)
         dashboard = cw.Dashboard(self, id = "dashboard", dashboard_name = "IEM-Dashboard-CDK")
+        widgets = []
 
         for key in config:
             metrics = config[key]["metrics"]
-        
+
             if key == "ECS":
                 clusters = config[key]["clusters"]
             
@@ -44,19 +45,15 @@ class CdkStack(cdk.Stack):
                                 ),
                                 statistic = "Avg",
                             )
-                        
-                            cpu_widget = cw.GraphWidget(
-                                title = key + " " + metric +  " " + service,
-                                left = [graphed_metric],
-                                width = 8,
-                                height = 4
-                            )
-                            
-                            dashboard.add_widgets(
-                                cw.Row(
-                                    cpu_widget
+
+                            widgets.append(cw.GraphWidget(
+                                    title = key + " " + metric +  " " + service,
+                                    left = [graphed_metric],
+                                    width = 8,
+                                    height = 4
                                 )
                             )
+            
             elif key == "SQS":
                 queues = config[key]["queues"]
                 ns = "AWS/SQS"
@@ -73,18 +70,20 @@ class CdkStack(cdk.Stack):
                             statistic = "Sum",
                         )
                     
-                        widget = cw.GraphWidget(
-                            title = key + " " + metric +  " " + queue,
-                            left = [graphed_metric],
-                            width = 8,
-                            height = 4
-                        )
-                        
-                        dashboard.add_widgets(
-                            cw.Row(
-                                widget
+                        widgets.append(cw.GraphWidget(
+                                title = key + " " + metric +  " " + queue,
+                                left = [graphed_metric],
+                                width = 8,
+                                height = 4
                             )
                         )
+                        
+                        # dashboard.add_widgets(
+                        #     cw.Row(
+                        #         widget
+                        #     )
+                        # )
+
             # API GW part isn't working
             elif key == "ApiGateway":
                 apis = config[key]["ApiId"]
@@ -110,18 +109,14 @@ class CdkStack(cdk.Stack):
                             statistic = metric_stat,
                         )
                     
-                        widget = cw.GraphWidget(
-                            title = "API GW " + api + " " + metric,
-                            left = [graphed_metric],
-                            width = 8,
-                            height = 4
-                        )
-                        
-                        dashboard.add_widgets(
-                            cw.Row(
-                                widget
+                        widgets.append(cw.GraphWidget(
+                                title = "API GW " + api + " " + metric,
+                                left = [graphed_metric],
+                                width = 8,
+                                height = 4
                             )
                         )
+
             elif key == "RDS":
                 clusters = config[key]["clusters"]
             
@@ -141,33 +136,12 @@ class CdkStack(cdk.Stack):
                             statistic = "Avg",
                         )
                     
-                        cpu_widget = cw.GraphWidget(
-                            title = key + " " + metric +  " " + cluster,
-                            left = [graphed_metric],
-                            width = 8,
-                            height = 4
-                        )
-                        
-                        dashboard.add_widgets(
-                            cw.Row(
-                                cpu_widget
+                        widgets.append(cw.GraphWidget(
+                                title = key + " " + metric +  " " + cluster,
+                                left = [graphed_metric],
+                                width = 8,
+                                height = 4
                             )
                         )
-                
-            # test_widget = cw.SingleValueWidget(
-                    #     metrics = [cw.Metric(
-                    #         metric_name = 'ResourceCount',
-                    #         namespace = 'AWS/Usage',
-                    #         dimensions = dict(
-                    #         Type = 'Resource',
-                    #         Resource = 'vCPU',
-                    #         Service = 'EC2',
-                    #         Class = 'Standard/OnDemand'
-                    #         )
-                    #     )],
-                    #     width = 6,
-                    #     height = 3,
-                    # )        
-        # for key in clusters:
-        #     print("key = " + key)
-        #     print(len(clusters))
+
+        dashboard.add_widgets(*widgets)
