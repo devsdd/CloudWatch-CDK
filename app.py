@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 import os
 
-from aws_cdk import core as cdk
-
 # For consistency with TypeScript code, `cdk` is the preferred import name for
 # the CDK's core module.  The following line also imports it as `core` for use
 # with examples from the CDK Developer's Guide, which are in the process of
 # being updated to use `cdk`.  You may delete this import if you don't need it.
-from aws_cdk import core
+from aws_cdk import (
+    core,
+    aws_cloudwatch as cw
+)
 
 from cdk.cdk_stack import CdkStack
 
@@ -21,7 +22,7 @@ CdkStack(app, "CdkStack",
     # Uncomment the next line to specialize this stack for the AWS Account
     # and Region that are implied by the current CLI configuration.
 
-    #env=core.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
+    env=core.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
 
     # Uncomment the next line if you know exactly what Account and Region you
     # want to deploy the stack to. */
@@ -30,5 +31,6 @@ CdkStack(app, "CdkStack",
 
     # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
     )
+
 
 app.synth()

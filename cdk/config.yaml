@@ -1,0 +1,26 @@
+---
+  ECS:
+    clusters:
+      sample-php-app-prod-Cluster-JZmVqMhA8vGy:
+        services:
+          - sample-php-app-prod-front-end-Service-NrkZdeDWDuTO
+      sample-php-app-test-Cluster-n5zOvxT1SdCa:
+        services:
+          - sample-php-app-test-front-end-Service-Pg0jkGNc64Uv
+    metrics:
+      - CPUUtilization
+      - MemoryUtilization
+      - RunningTaskCount
+  
+  SQS:
+    queues:
+      - test-queue
+    metrics:
+      - NumberOfMessagesSent
+      - NumberOfMessagesReceived
+
+  RDS:
+    clusters:
+      - database-1
+    metrics:
+      - CPUUtilization
